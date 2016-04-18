@@ -1,4 +1,4 @@
-/**
+ /**
  * 
  */
 package com.flatironschool.javacs;
@@ -63,9 +63,10 @@ public class MyLinkedList<E> implements List<E> {
 		mll.add(1);
 		mll.add(2);
 		mll.add(3);
+	
 		System.out.println(Arrays.toString(mll.toArray()) + " size = " + mll.size());
-		
-		mll.remove(new Integer(2));
+		System.out.println(mll.indexOf(new Integer(1)));
+		System.out.println(mll.remove(new Integer(5)));
 		System.out.println(Arrays.toString(mll.toArray()) + " size = " + mll.size());
 	}
 
@@ -85,6 +86,33 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public void add(int index, E element) {
+		if (index < 0 || index > size) {
+			throw new IndexOutOfBoundsException();
+		}
+		if(index == size){
+			add( element);
+		}else{
+		Node node = head;
+		if(index == 0){
+			Node temp = head;
+			head = new Node(element);
+			head.next = temp;
+	   
+		}else{
+			if(node!=null){
+				for (int i=0; i<index-1&&node.next!=null; i++) {
+
+					node = node.next;
+				}
+			}
+			
+			Node temp = node.next;
+			node.next =  new Node(element);
+			node.next.next = temp;
+		}
+		
+		size++;
+		}
 		// TODO: fill this in
 	}
 
@@ -146,8 +174,23 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
+		Node node = head;
+		int count = 0;
+		while(!equals(target, node.cargo)&&node.next!=null){
+			node = node.next;
+			count ++;
+			//System.out.print(count);
+		}
+		
 		// TODO: fill this in
+		
+		if(node.next==null&&!equals(target, node.cargo)){
 		return -1;
+		}else if(equals(target, node.cargo)){
+			return count++;
+		}else{
+			return count;
+		}
 	}
 
 	/** Checks whether an element of the array is the target.
@@ -201,15 +244,52 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public boolean remove(Object obj) {
-		// TODO: fill this in
-		return false;
+		int index = indexOf(obj);
+		
+		if (index == -1) {
+			return false;
+		}
+		remove(index);
+		return true;
+		
+
 	}
 
 	@Override
 	public E remove(int index) {
-		// TODO: fill this in
-		return null;
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		if(index == 0){
+		 Node temp = head;
+		 head = head.next;
+		 size--;
+		 return temp.cargo;
+		}else{
+			Node node = head;
+			for(int i = 0; i < index-1; i ++){
+				node = node.next;
+			}
+			Node temp = node.next;
+			node.next =node.next.next;
+			temp.next = null;
+			size--;
+			return temp.cargo;
+		}
+	
+		
 	}
+//	public E remove(int index) {
+//		E element = get(index);
+//		if (index == 0) {
+//			head = head.next;
+//		} else {
+//			Node node = getNode(index-1);
+//			node.next = node.next.next;
+//		}
+//		size--;
+//		return element;
+//	}
 
 	@Override
 	public boolean removeAll(Collection<?> collection) {
@@ -260,9 +340,12 @@ public class MyLinkedList<E> implements List<E> {
 		Object[] array = new Object[size];
 		int i = 0;
 		for (Node node=head; node != null; node = node.next) {
-			// System.out.println(node);
+//			System.out.println("i");
+			//System.out.println(node.next=null);
+//			System.out.println(i);
 			array[i] = node.cargo;
 			i++;
+		
 		}
 		return array;
 	}
